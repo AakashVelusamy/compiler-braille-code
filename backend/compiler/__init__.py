@@ -1,0 +1,1 @@
+"""BrailleCode Compiler Django app."""
