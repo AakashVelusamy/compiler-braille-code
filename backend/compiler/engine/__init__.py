@@ -12,5 +12,6 @@ from .ast_nodes import (
     ast_to_dict, print_ast,
 )
 from .analyzer import SemanticAnalyzer, SemanticError, SymbolTable
+from .interpreter import Interpreter, RuntimeError_, MaxIterationsError
 from .tokens import Token, TokenType
 from .lexer import Lexer, LexerError
