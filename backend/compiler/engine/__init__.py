@@ -11,5 +11,6 @@ from .ast_nodes import (
     Number, String, Boolean, NoneValue, Identifier,
     ast_to_dict, print_ast,
 )
+from .analyzer import SemanticAnalyzer, SemanticError, SymbolTable
 from .tokens import Token, TokenType
 from .lexer import Lexer, LexerError
