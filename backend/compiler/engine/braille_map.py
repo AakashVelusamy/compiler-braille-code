@@ -85,7 +85,7 @@ KEYWORDS = {
 # ─── Whitespace ───────────────────────────────────────────────────────────────
 
 BRAILLE_SPACE = '⠀'       # U+2800 — Braille blank / space
-BRAILLE_NEWLINE = '⠀⠀⠀'   # triple space = newline delimiter
+BRAILLE_NEWLINE = '⠿'     # U+283F (all 6 dots) — unambiguous line separator
 BRAILLE_INDENT = '⠀⠀'     # double space = one indent level
 
 # ─── Reverse mappings (Braille → English) ────────────────────────────────────
