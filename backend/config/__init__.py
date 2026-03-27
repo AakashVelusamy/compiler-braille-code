@@ -1,0 +1,1 @@
+"""BrailleCode Django project configuration."""

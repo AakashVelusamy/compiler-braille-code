@@ -1,19 +1,52 @@
-# BrailleCode Compiler — Step 1: Braille Mapping + Translator
+# BrailleCode Compiler
+
+**23XT67 — Compiler Design Lab**
+
+A compiler that treats Braille as the native source code. Users write in English-like syntax, the system converts to Braille, then compiles and executes through a full pipeline: Translator → Lexer → Parser → Semantic Analyzer → Interpreter.
 
 ## Project Structure
 
 ```
 braillecode/
-├── backend/
-│   ├── compiler/
-│   │   ├── __init__.py
-│   │   └── engine/
-│   │       ├── __init__.py
-│   │       ├── braille_map.py    ← Braille ↔ English mapping table
-│   │       └── translator.py     ← English ↔ Braille converter
-│   └── tests/
-│       ├── __init__.py
-│       └── test_translator.py    ← Test suite
+├── backend/                     # Django + DRF
+│   ├── manage.py
+│   ├── requirements.txt
+│   ├── config/                  # Django project settings
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   └── wsgi.py
+│   ├── compiler/                # Django app
+│   │   ├── apps.py
+│   │   ├── urls.py              # /api/compile, /api/translate, /api/ast
+│   │   ├── views.py             # DRF API views
+│   │   ├── serializers.py
+│   │   └── engine/              # Compiler pipeline (pure Python)
+│   │       ├── braille_map.py
+│   │       ├── translator.py
+│   │       ├── tokens.py
+│   │       ├── lexer.py
+│   │       ├── ast_nodes.py
+│   │       ├── parser.py
+│   │       ├── analyzer.py
+│   │       └── interpreter.py
+│   └── tests/                   # 122 tests total
+│       ├── test_translator.py
+│       ├── test_lexer.py
+│       ├── test_parser.py
+│       ├── test_analyzer.py
+│       └── test_interpreter.py
+├── frontend/                    # React 18
+│   ├── package.json
+│   ├── public/index.html
+│   └── src/
+│       ├── index.js
+│       ├── App.jsx
+│       ├── App.css
+│       ├── api/compilerApi.js
+│       └── components/
+│           ├── CodeEditor.jsx
+│           ├── BrailleDisplay.jsx
+│           └── OutputPanel.jsx
 └── README.md
 ```
 
@@ -21,55 +54,60 @@ braillecode/
 
 ### Prerequisites
 - Python 3.8+
+- Node.js 16+ and npm
 
-### Run the tests
+### 1. Backend (Django)
+
+```bash
+cd braillecode/backend
+
+# Create virtual environment (recommended)
+python -m venv venv
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # Mac/Linux
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the Django server
+python manage.py runserver
+```
+
+The API is at **http://localhost:8000/api/**
+
+| Method | URL               | Description                        |
+|--------|-------------------|------------------------------------|
+| POST   | `/api/compile/`   | Full pipeline: compile + execute   |
+| POST   | `/api/translate/` | English to Braille translation     |
+| POST   | `/api/ast/`       | Returns AST JSON (no execution)    |
+
+All endpoints accept: `{ "source": "your code here" }`
+
+### 2. Frontend (React)
+
+```bash
+cd braillecode/frontend
+npm install
+npm start
+```
+
+Opens at **http://localhost:3000**, proxies API calls to Django on port 8000.
+
+### Run All Tests (122 total)
 
 ```bash
 cd braillecode/backend
 python -m tests.test_translator
+python -m tests.test_lexer
+python -m tests.test_parser
+python -m tests.test_analyzer
+python -m tests.test_interpreter
 ```
 
-This runs 12 tests covering:
-- Mapping completeness (26 letters, 10 digits)
-- Reverse mapping correctness
-- No pattern collisions
-- Simple assignments, keywords, operators
-- Indentation handling
-- Round-trip (English → Braille → English)
-- Full multi-line program translation
+### Quick API Test (no frontend)
 
-### Quick interactive demo
-
-```bash
-cd braillecode/backend
-python3 -c "
-from compiler.engine.translator import Translator
-t = Translator()
-
-code = '''x = 10
-if x > 5:
-    print(x)
-else:
-    print(0)'''
-
-braille = t.english_to_braille(code)
-print('=== English Source ===')
-print(code)
-print()
-print('=== Braille Output ===')
-print(braille)
-print()
-print('=== Back to English ===')
-print(t.braille_to_english(braille))
-"
+```powershell
+Invoke-RestMethod -Method POST -Uri "http://localhost:8000/api/compile/" `
+  -ContentType "application/json" `
+  -Body '{"source": "x = 10\nprint(x)"}'
 ```
-
-## What's in this step
-
-| File | Purpose |
-|------|---------|
-| `braille_map.py` | Complete mapping table: 26 lowercase letters, 10 digits, 11 operators, 6 punctuation marks, 10 keywords, whitespace rules, and auto-generated reverse mappings |
-| `translator.py` | `Translator` class with `english_to_braille()` and `braille_to_english()` methods. Handles keywords, identifiers, numbers, operators, string literals, and indentation |
-
-## Next step
-Lexer — takes the Braille string from the translator and produces a token stream.
