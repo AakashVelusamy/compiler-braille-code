@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import ASTTreeVisualizer from './ASTTreeVisualizer';
 
 const TABS = [
   { key: 'output', label: 'Output' },
   { key: 'variables', label: 'Variables' },
   { key: 'tokens', label: 'Tokens' },
-  { key: 'ast', label: 'AST' },
+  { key: 'ast_tree', label: 'AST Tree' },
+  { key: 'ast', label: 'AST JSON' },
 ];
 
 export default function OutputPanel({ result, loading }) {
@@ -47,6 +49,7 @@ export default function OutputPanel({ result, loading }) {
             {activeTab === 'output' && <OutputTab result={result} />}
             {activeTab === 'variables' && <VariablesTab result={result} />}
             {activeTab === 'tokens' && <TokensTab result={result} />}
+            {activeTab === 'ast_tree' && <ASTTreeTab result={result} />}
             {activeTab === 'ast' && <ASTTab result={result} />}
           </>
         )}
@@ -159,6 +162,16 @@ function TokensTab({ result }) {
           ))}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+function ASTTreeTab({ result }) {
+  const astTree = result.ast_tree;
+
+  return (
+    <div className="tab-content">
+      <ASTTreeVisualizer astTree={astTree} />
     </div>
   );
 }

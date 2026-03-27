@@ -17,7 +17,7 @@ from .engine.lexer import Lexer, LexerError
 from .engine.parser import Parser, ParseError
 from .engine.analyzer import SemanticAnalyzer
 from .engine.interpreter import Interpreter
-from .engine.ast_nodes import ast_to_dict
+from .engine.ast_nodes import ast_to_dict, ast_to_tree
 
 
 translator = Translator()
@@ -116,6 +116,7 @@ def compile_and_run(request):
         parser = Parser(tokens)
         ast = parser.parse()
         result['ast'] = ast_to_dict(ast)
+        result['ast_tree'] = ast_to_tree(ast)
     except ParseError as e:
         result['errors'].append({
             'phase': 'parser',
@@ -184,6 +185,7 @@ def get_ast(request):
         ast = Parser(tokens).parse()
         return Response({
             'ast': ast_to_dict(ast),
+            'ast_tree': ast_to_tree(ast),
             'braille': braille,
         })
     except (TranslationError, LexerError, ParseError) as e:

@@ -323,3 +323,139 @@ def print_ast(node: ASTNode, indent: int = 0):
 
     else:
         print(f"{prefix}??? {repr(node)}")
+
+
+def ast_to_tree(node: ASTNode) -> dict:
+    """
+    Convert an AST to a uniform tree structure for the frontend visualizer.
+    Every node has: { id, label, type, category, children, line }
+
+    Categories: 'program', 'statement', 'expression', 'literal', 'operator'
+    """
+    _counter = [0]
+
+    def _id():
+        _counter[0] += 1
+        return f"n{_counter[0]}"
+
+    def _visit(n):
+        if isinstance(n, Program):
+            return {
+                'id': _id(), 'label': 'Program', 'type': 'Program',
+                'category': 'program', 'line': n.line,
+                'children': [_visit(s) for s in n.body],
+            }
+        elif isinstance(n, Assign):
+            return {
+                'id': _id(), 'label': f'{n.name} =', 'type': 'Assign',
+                'category': 'statement', 'line': n.line,
+                'children': [_visit(n.value)],
+            }
+        elif isinstance(n, Print):
+            return {
+                'id': _id(), 'label': 'print', 'type': 'Print',
+                'category': 'statement', 'line': n.line,
+                'children': [_visit(n.value)],
+            }
+        elif isinstance(n, If):
+            children = [
+                {'id': _id(), 'label': 'condition', 'type': 'Label',
+                 'category': 'operator', 'line': n.line,
+                 'children': [_visit(n.condition)]},
+                {'id': _id(), 'label': 'body', 'type': 'Label',
+                 'category': 'operator', 'line': n.line,
+                 'children': [_visit(s) for s in n.body]},
+            ]
+            for ec, eb in n.elif_clauses:
+                children.append({
+                    'id': _id(), 'label': 'elif', 'type': 'Label',
+                    'category': 'operator', 'line': ec.line,
+                    'children': [
+                        {'id': _id(), 'label': 'condition', 'type': 'Label',
+                         'category': 'operator', 'line': ec.line,
+                         'children': [_visit(ec)]},
+                        {'id': _id(), 'label': 'body', 'type': 'Label',
+                         'category': 'operator', 'line': ec.line,
+                         'children': [_visit(s) for s in eb]},
+                    ],
+                })
+            if n.else_body is not None:
+                children.append({
+                    'id': _id(), 'label': 'else', 'type': 'Label',
+                    'category': 'operator', 'line': n.line,
+                    'children': [_visit(s) for s in n.else_body],
+                })
+            return {
+                'id': _id(), 'label': 'if', 'type': 'If',
+                'category': 'statement', 'line': n.line,
+                'children': children,
+            }
+        elif isinstance(n, While):
+            return {
+                'id': _id(), 'label': 'while', 'type': 'While',
+                'category': 'statement', 'line': n.line,
+                'children': [
+                    {'id': _id(), 'label': 'condition', 'type': 'Label',
+                     'category': 'operator', 'line': n.line,
+                     'children': [_visit(n.condition)]},
+                    {'id': _id(), 'label': 'body', 'type': 'Label',
+                     'category': 'operator', 'line': n.line,
+                     'children': [_visit(s) for s in n.body]},
+                ],
+            }
+        elif isinstance(n, BinOp):
+            return {
+                'id': _id(), 'label': n.op, 'type': 'BinOp',
+                'category': 'operator', 'line': n.line,
+                'children': [_visit(n.left), _visit(n.right)],
+            }
+        elif isinstance(n, UnaryOp):
+            return {
+                'id': _id(), 'label': n.op, 'type': 'UnaryOp',
+                'category': 'operator', 'line': n.line,
+                'children': [_visit(n.operand)],
+            }
+        elif isinstance(n, Compare):
+            return {
+                'id': _id(), 'label': n.op, 'type': 'Compare',
+                'category': 'operator', 'line': n.line,
+                'children': [_visit(n.left), _visit(n.right)],
+            }
+        elif isinstance(n, BoolOp):
+            return {
+                'id': _id(), 'label': n.op, 'type': 'BoolOp',
+                'category': 'operator', 'line': n.line,
+                'children': [_visit(n.left), _visit(n.right)],
+            }
+        elif isinstance(n, Number):
+            return {
+                'id': _id(), 'label': str(n.value), 'type': 'Number',
+                'category': 'literal', 'line': n.line, 'children': [],
+            }
+        elif isinstance(n, String):
+            return {
+                'id': _id(), 'label': f'"{n.value}"', 'type': 'String',
+                'category': 'literal', 'line': n.line, 'children': [],
+            }
+        elif isinstance(n, Boolean):
+            return {
+                'id': _id(), 'label': str(n.value), 'type': 'Boolean',
+                'category': 'literal', 'line': n.line, 'children': [],
+            }
+        elif isinstance(n, NoneValue):
+            return {
+                'id': _id(), 'label': 'None', 'type': 'NoneValue',
+                'category': 'literal', 'line': n.line, 'children': [],
+            }
+        elif isinstance(n, Identifier):
+            return {
+                'id': _id(), 'label': n.name, 'type': 'Identifier',
+                'category': 'literal', 'line': n.line, 'children': [],
+            }
+        else:
+            return {
+                'id': _id(), 'label': '???', 'type': 'Unknown',
+                'category': 'literal', 'line': 0, 'children': [],
+            }
+
+    return _visit(node)
