@@ -1,79 +1,36 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 
-/*
- * Category → color mapping (matches the dark theme)
- */
-const CATEGORY_COLORS = {
-  program:    { bg: '#1f2937', border: '#6b7280', text: '#e5e7eb' },
-  statement:  { bg: '#172554', border: '#3b82f6', text: '#93c5fd' },
-  expression: { bg: '#172554', border: '#3b82f6', text: '#93c5fd' },
-  operator:   { bg: '#3b1764', border: '#a855f7', text: '#d8b4fe' },
-  literal:    { bg: '#14532d', border: '#22c55e', text: '#86efac' },
+const CAT_STYLE = {
+  program:   { bg: '#1a1a2e', bd: '#6366f1', tx: '#a5b4fc' },
+  statement: { bg: '#0c1929', bd: '#3b82f6', tx: '#93c5fd' },
+  operator:  { bg: '#1e0a34', bd: '#a855f7', tx: '#d8b4fe' },
+  literal:   { bg: '#0a2618', bd: '#22c55e', tx: '#86efac' },
 };
+const DEF = { bg: '#111', bd: '#444', tx: '#999' };
+const col = c => CAT_STYLE[c] || DEF;
 
-const DEFAULT_COLOR = { bg: '#1c2128', border: '#30363d', text: '#8b949e' };
-
-function getColor(category) {
-  return CATEGORY_COLORS[category] || DEFAULT_COLOR;
-}
-
-/*
- * Single tree node — renders label, type badge, and expand/collapse toggle
- */
-function TreeNode({ node, depth = 0, highlightLine, onHoverLine }) {
-  const [collapsed, setCollapsed] = useState(depth > 3);
-  const hasChildren = node.children && node.children.length > 0;
-  const color = getColor(node.category);
-  const isHighlighted = highlightLine && node.line === highlightLine;
+function Node({ node, depth = 0, hl, onHover }) {
+  const [open, setOpen] = useState(depth < 3);
+  const has = node.children?.length > 0;
+  const c = col(node.category);
+  const lit = hl && node.line === hl;
 
   return (
-    <div className="ast-node-group">
-      <div
-        className={`ast-node ${isHighlighted ? 'ast-node-highlight' : ''}`}
-        style={{
-          '--node-bg': color.bg,
-          '--node-border': color.border,
-          '--node-text': color.text,
-          marginLeft: depth * 24,
-        }}
-        onMouseEnter={() => onHoverLine && onHoverLine(node.line)}
-        onMouseLeave={() => onHoverLine && onHoverLine(null)}
-        onClick={() => hasChildren && setCollapsed(!collapsed)}
-      >
-        {/* Expand/collapse toggle */}
-        {hasChildren && (
-          <span className="ast-toggle">{collapsed ? '▸' : '▾'}</span>
-        )}
-        {!hasChildren && <span className="ast-toggle-spacer" />}
-
-        {/* Node label */}
-        <span className="ast-label">{node.label}</span>
-
-        {/* Type badge */}
-        <span className="ast-type-badge">{node.type}</span>
-
-        {/* Line number */}
-        {node.line > 0 && (
-          <span className="ast-line-badge">L{node.line}</span>
-        )}
+    <div className="ast-grp">
+      <div className={`ast-nd${lit ? ' ast-lit' : ''}`}
+        style={{ '--nbg': c.bg, '--nbd': c.bd, '--ntx': c.tx, marginLeft: depth * 20 }}
+        onMouseEnter={() => onHover?.(node.line)} onMouseLeave={() => onHover?.(null)}
+        onClick={() => has && setOpen(!open)}>
+        {has ? <span className="ast-arr">{open ? '▾' : '▸'}</span> : <span className="ast-spc" />}
+        <span className="ast-lbl">{node.label}</span>
+        <span className="ast-badge">{node.type}</span>
+        {node.line > 0 && <span className="ast-ln">:{node.line}</span>}
       </div>
-
-      {/* Children (if not collapsed) */}
-      {hasChildren && !collapsed && (
-        <div className="ast-children">
-          {/* Vertical connector line */}
-          <div
-            className="ast-connector"
-            style={{ left: depth * 24 + 12 }}
-          />
-          {node.children.map((child, i) => (
-            <TreeNode
-              key={child.id || i}
-              node={child}
-              depth={depth + 1}
-              highlightLine={highlightLine}
-              onHoverLine={onHoverLine}
-            />
+      {has && open && (
+        <div className="ast-ch">
+          <div className="ast-vline" style={{ left: depth * 20 + 10 }} />
+          {node.children.map((ch, i) => (
+            <Node key={ch.id || i} node={ch} depth={depth + 1} hl={hl} onHover={onHover} />
           ))}
         </div>
       )}
@@ -81,64 +38,20 @@ function TreeNode({ node, depth = 0, highlightLine, onHoverLine }) {
   );
 }
 
-/*
- * Legend showing category colors
- */
-function TreeLegend() {
-  const items = [
-    { category: 'statement', label: 'Statement' },
-    { category: 'operator', label: 'Operator' },
-    { category: 'literal', label: 'Literal / Identifier' },
-  ];
+export default function ASTTreeVisualizer({ astTree }) {
+  const [hl, setHl] = useState(null);
+  const hover = useCallback(l => setHl(l), []);
+
+  if (!astTree?.children) return <div className="placeholder">Compile to see AST</div>;
 
   return (
-    <div className="ast-legend">
-      {items.map(({ category, label }) => {
-        const c = getColor(category);
-        return (
-          <span key={category} className="ast-legend-item">
-            <span
-              className="ast-legend-dot"
-              style={{ background: c.border }}
-            />
-            {label}
-          </span>
-        );
-      })}
-    </div>
-  );
-}
-
-/*
- * Main AST Tree Visualizer
- */
-export default function ASTTreeVisualizer({ astTree, onHoverLine }) {
-  const [highlightLine, setHighlightLine] = useState(null);
-
-  const handleHoverLine = useCallback((line) => {
-    setHighlightLine(line);
-    if (onHoverLine) onHoverLine(line);
-  }, [onHoverLine]);
-
-  if (!astTree || !astTree.children) {
-    return (
-      <div className="ast-tree-empty">
-        Compile your code to see the AST tree
+    <div className="ast-viz">
+      <div className="ast-legend">
+        {[['statement', 'Statement'], ['operator', 'Operator'], ['literal', 'Literal']].map(([k, v]) => (
+          <span key={k} className="ast-leg-item"><span className="ast-leg-dot" style={{ background: col(k).bd }} />{v}</span>
+        ))}
       </div>
-    );
-  }
-
-  return (
-    <div className="ast-tree-visualizer">
-      <TreeLegend />
-      <div className="ast-tree-scroll">
-        <TreeNode
-          node={astTree}
-          depth={0}
-          highlightLine={highlightLine}
-          onHoverLine={handleHoverLine}
-        />
-      </div>
+      <div className="ast-scroll"><Node node={astTree} depth={0} hl={hl} onHover={hover} /></div>
     </div>
   );
 }

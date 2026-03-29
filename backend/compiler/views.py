@@ -17,6 +17,7 @@ from .engine.lexer import Lexer, LexerError
 from .engine.parser import Parser, ParseError
 from .engine.analyzer import SemanticAnalyzer
 from .engine.interpreter import Interpreter
+from .engine.debugger import Debugger
 from .engine.ast_nodes import ast_to_dict, ast_to_tree
 
 
@@ -204,3 +205,50 @@ def _serialize_value(value):
     if isinstance(value, (int, float, str)):
         return value
     return str(value)
+
+
+@api_view(['POST'])
+def debug(request):
+    """
+    POST /api/debug/
+    Body: { "source": "x = 10\\nprint(x)" }
+
+    Executes the program step by step, returning a list of snapshots.
+    Each step contains: line number, statement type, description,
+    variable states, output, branch taken, loop iteration.
+    """
+    source = request.data.get('source', '')
+    if not source.strip():
+        return Response(
+            {'error': 'Source code is required'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    # Run through translation → lexing → parsing → analysis first
+    try:
+        braille = translator.english_to_braille(source)
+        tokens = Lexer(braille).tokenize()
+        ast = Parser(tokens).parse()
+    except (TranslationError, LexerError, ParseError) as e:
+        return Response(
+            {'error': str(e), 'steps': [], 'success': False},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    # Semantic check
+    analyzer = SemanticAnalyzer()
+    if not analyzer.analyze(ast):
+        return Response({
+            'error': 'Semantic errors found',
+            'semantic_errors': [
+                {'message': str(e), 'line': e.line} for e in analyzer.errors
+            ],
+            'steps': [],
+            'success': False,
+        })
+
+    # Debug execution
+    debugger = Debugger()
+    result = debugger.run(ast)
+
+    return Response(result)

@@ -1,22 +1,20 @@
 import React from 'react';
 
-export default function BrailleDisplay({ braille, loading }) {
+export default function BrailleDisplay({ braille, loading, isLive }) {
   return (
-    <div className="panel">
-      <div className="panel-header">
-        <span className="panel-icon">⠃</span>
-        <h3>Braille output</h3>
-        <span className="panel-badge">Unicode</span>
+    <div className="braille-panel">
+      <div className="panel-bar">
+        <span className="braille-icon">⠃⠗⠇</span>
+        <span className="panel-title">Braille</span>
+        {isLive && <span className="badge badge-live">LIVE</span>}
       </div>
-      <div className="braille-content">
+      <div className="braille-body">
         {loading ? (
-          <div className="loading-placeholder">Translating...</div>
+          <div className="placeholder">Translating...</div>
         ) : braille ? (
           <pre className="braille-text">{braille}</pre>
         ) : (
-          <div className="empty-placeholder">
-            Braille representation will appear here after compilation
-          </div>
+          <div className="placeholder">Braille appears here as you type</div>
         )}
       </div>
     </div>
