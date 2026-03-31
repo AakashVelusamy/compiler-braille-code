@@ -83,17 +83,23 @@ braillecode/
 │   │       ├── ast_nodes.py               # 13 AST node dataclasses + ast_to_dict + ast_to_tree
 │   │       ├── parser.py                  # Parser class (recursive descent)
 │   │       ├── analyzer.py                # SemanticAnalyzer + SymbolTable + Symbol
+│   │       ├── ir_generator.py            # Generates Three-Address Code (TAC) from AST
+│   │       ├── optimizer.py               # Optimizes IR (constant folding, dead code elimination)
+│   │       ├── codegen.py                 # Generates Target Machine Assembly from optimized IR
 │   │       ├── interpreter.py             # Interpreter + Environment
 │   │       └── debugger.py                # Debugger + DebugStep (step-by-step executor)
-│   └── tests/                             # 122 tests total
+│   └── tests/                             # 122+ tests total
 │       ├── __init__.py
 │       ├── test_translator.py             # 12 tests
 │       ├── test_lexer.py                  # 18 tests
 │       ├── test_parser.py                 # 23 tests
 │       ├── test_analyzer.py               # 26 tests
+│       ├── test_ir_generator.py           # IR Generation tests
+│       ├── test_optimizer.py              # Optimizations passes tests
+│       ├── test_codegen.py                # Target machine code generation tests
 │       └── test_interpreter.py            # 43 tests
 ├── frontend/
-│   ├── package.json                       # React 18, axios, @monaco-editor/react
+│   ├── package.json                       # React 18, @monaco-editor/react
 │   ├── public/index.html
 │   └── src/
 │       ├── index.js                       # React entry point
@@ -103,14 +109,19 @@ braillecode/
 │       │   └── compilerApi.js             # axios client: compileCode, translateCode, debugCode, getAST
 │       └── components/
 │           ├── CodeEditor.jsx             # Monaco Editor + debug line highlighting + error markers
-│           ├── BrailleDisplay.jsx          # Braille Unicode panel + live preview badge
-│           ├── OutputPanel.jsx             # 5-tab results panel (Output/Variables/Tokens/AST Tree/AST JSON)
-│           ├── TokenVisualizer.jsx         # Colored pills (6 categories) + table view toggle
-│           ├── ASTTreeVisualizer.jsx       # Interactive collapsible tree (3 color categories)
-│           ├── DebuggerPanel.jsx           # Play/pause/step controls + variable watch + timeline
-│           ├── PipelineTimeline.jsx        # 5-phase stepper (Translate→Lex→Parse→Analyze→Execute)
-│           ├── ExamplesGallery.jsx         # Modal with 10 preloaded programs
-│           └── ExportButtons.jsx           # Download .bcc/.brl/.json/output/full report
+│           ├── BrailleDisplay.jsx         # Braille Unicode panel + live preview badge
+│           ├── OutputPanel.jsx            # Multi-tab routing for phase visualizers
+│           ├── TokenVisualizer.jsx        # Colored pills (6 categories) + table view toggle
+│           ├── ASTTreeVisualizer.jsx      # Interactive collapsible tree (3 color categories)
+│           ├── SemanticVisualizer.jsx     # Symbols table, errors and warnings banner
+│           ├── IRVisualizer.jsx           # Intermediate representation (TAC) visualizer
+│           ├── OptimizationVisualizer.jsx # Before/After diffs for optimizations
+│           ├── CodeGenVisualizer.jsx      # Assembly output and memory mapping
+│           ├── DebuggerPanel.jsx          # Play/pause/step controls + variable watch + timeline
+│           ├── PipelineTimeline.jsx       # Pipeline stepper (Translate→Lex→Parse→Analyze→Execute)
+│           ├── ExamplesGallery.jsx        # Modal with sample programs
+│           ├── ExportButtons.jsx          # Download files and full report
+│           └── Icons.jsx                  # Lucide React icons wrapper
 └── README.md
 ```
 

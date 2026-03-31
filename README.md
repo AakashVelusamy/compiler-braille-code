@@ -12,17 +12,19 @@ A compiler that treats Braille as the native source code. Users write in English
 - **Lexer** - Tokenizes Braille input with indentation-based scoping (INDENT/DEDENT)
 - **Parser** - Recursive descent parser with 7-level operator precedence → AST
 - **Semantic Analyzer** - Symbol table, scope tracking, variable usage checks, type inference
+- **IR Generator** - Converts AST into machine-independent Three-Address Code (TAC)
+- **Optimizer** - Applies dead code elimination, constant folding, and copy propagation
+- **Code Generator** - Lowers optimized IR to target machine assembly with register allocation
 - **Interpreter** - Tree-walk executor with division-by-zero protection and loop limits
 
 ### Frontend Features
 - **Monaco Editor** - VS Code-quality code editor with Python syntax highlighting
 - **Live Braille Preview** - Real-time Braille translation as you type (debounced 500ms)
-- **AST Tree Visualizer** - Interactive collapsible tree, color-coded by node category
-- **Token Stream Visualizer** - Colored pills grouped by line (keyword/operator/literal/identifier)
-- **Step-by-Step Debugger** - Play/pause/step controls, variable watch, output tracking, line highlighting
+- **Compiler Phases Visualizers** - Interactive tabs for Lexical, Syntax (AST), Semantic, IR, Optimization, and Code Generation outputs
 - **Pipeline Timeline** - Visual stepper showing pass/fail status for each compiler phase
+- **Step-by-Step Debugger** - Play/pause/step controls, variable watch, output tracking, line highlighting
 - **Error Highlighting** - Red squiggly markers in the editor on error lines
-- **Example Programs Gallery** - 10 preloaded programs (FizzBuzz, Fibonacci, Factorial, etc.)
+- **Example Programs Gallery** - preloaded programs (FizzBuzz, Fibonacci, Factorial, etc.)
 - **Export/Download** - Export source (.bcc), Braille (.brl), AST (.json), output, or full report
 
 ### API Endpoints
@@ -53,6 +55,9 @@ braillecode/
 │           ├── ast_nodes.py         # AST node types + serializers
 │           ├── parser.py            # Recursive descent parser
 │           ├── analyzer.py          # Semantic analysis
+│           ├── ir_generator.py      # Uses AST to generate Three Address Code (TAC)
+│           ├── optimizer.py         # Constant folding, dead code config on IR
+│           ├── codegen.py           # Emits assembly + memory map
 │           ├── interpreter.py       # Tree-walk interpreter
 │           └── debugger.py          # Step-by-step executor
 ├── frontend/                        # React 18
@@ -60,17 +65,23 @@ braillecode/
 │   ├── public/index.html
 │   └── src/
 │       ├── App.jsx                  # Main app with all features wired
-│       ├── App.css                  # Complete dark theme styling
+│       ├── App.css                  # Complete dark theme styling + phase tabs
 │       ├── api/compilerApi.js       # API client (compile, debug, translate)
 │       └── components/
-│           ├── CodeEditor.jsx       # Monaco with debug + error highlighting
-│           ├── BrailleDisplay.jsx   # Live Braille preview panel
-│           ├── OutputPanel.jsx      # Tabbed results (Output/Vars/Tokens/AST)
-│           ├── ASTTreeVisualizer.jsx    # Interactive AST tree
+│           ├── CodeEditor.jsx           # Monaco with debug + error highlighting
+│           ├── BrailleDisplay.jsx       # Live Braille preview panel
+│           ├── OutputPanel.jsx          # Tabbed results routing for all phases
+│           ├── TokenVisualizer.jsx      # Phase 1 output
+│           ├── ASTTreeVisualizer.jsx    # Phase 2 output
+│           ├── SemanticVisualizer.jsx   # Phase 3 output
+│           ├── IRVisualizer.jsx         # Phase 4 output
+│           ├── OptimizationVisualizer.jsx # Phase 5 output
+│           ├── CodeGenVisualizer.jsx    # Phase 6 output
 │           ├── DebuggerPanel.jsx        # Step-by-step debugger with playback
 │           ├── PipelineTimeline.jsx     # Compiler phase pass/fail stepper
-│           ├── ExamplesGallery.jsx      # 10 example programs modal
-│           └── ExportButtons.jsx        # Download .bcc/.brl/.json/report
+│           ├── ExamplesGallery.jsx      # Gallery modal with sample programs
+│           ├── ExportButtons.jsx        # Download reports
+│           └── Icons.jsx                # Lucide React icons wrapper
 └── README.md
 ```
 
