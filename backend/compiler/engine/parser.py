@@ -226,7 +226,7 @@ class Parser:
         self._expect(TokenType.DEDENT)
 
         if not statements:
-            raise ParseError("Empty block — expected at least one statement", self._current())
+            raise ParseError("Empty block - expected at least one statement", self._current())
 
         return statements
 

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/admin/github/bcc/frontend -type f -name *.jsx -o -name *.js)",
+      "Bash(python -m tests.test_translator)",
+      "Bash(python -m tests.test_lexer)",
+      "Bash(python -m tests.test_parser)",
+      "Bash(python -m tests.test_analyzer)",
+      "Bash(python -m tests.test_interpreter)"
+    ]
+  }
+}

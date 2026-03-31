@@ -66,7 +66,7 @@ PUNCTUATION = {
 # We use the Braille letters for the keyword spelled out,
 # but preceded by a keyword indicator (⠈⠼) to distinguish from identifiers.
 
-KEYWORD_PREFIX = '⠈⠼'  # dots-4 + dots-3456 — signals "next token is a keyword"
+KEYWORD_PREFIX = '⠈⠼'  # dots-4 + dots-3456 - signals "next token is a keyword"
 
 KEYWORDS = {
     'print':  '⠏⠗⠊⠝⠞',
@@ -84,8 +84,8 @@ KEYWORDS = {
 
 # ─── Whitespace ───────────────────────────────────────────────────────────────
 
-BRAILLE_SPACE = '⠀'       # U+2800 — Braille blank / space
-BRAILLE_NEWLINE = '⠿'     # U+283F (all 6 dots) — unambiguous line separator
+BRAILLE_SPACE = '⠀'       # U+2800 - Braille blank / space
+BRAILLE_NEWLINE = '⠿'     # U+283F (all 6 dots) - unambiguous line separator
 BRAILLE_INDENT = '⠀⠀'     # double space = one indent level
 
 # ─── Reverse mappings (Braille → English) ────────────────────────────────────

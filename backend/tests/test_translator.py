@@ -191,7 +191,7 @@ else:
 
 if __name__ == '__main__':
     print("=" * 60)
-    print("BrailleCode Translator — Test Suite")
+    print("BrailleCode Translator - Test Suite")
     print("=" * 60)
     print()
 

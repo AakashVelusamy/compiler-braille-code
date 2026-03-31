@@ -53,7 +53,7 @@ class Lexer:
         self.tokens: List[Token] = []
         self.line = 1
 
-        # Indentation tracking — a stack of indent levels (in number of BRAILLE_INDENT units)
+        # Indentation tracking - a stack of indent levels (in number of BRAILLE_INDENT units)
         # Starts at 0 (no indentation)
         self.indent_stack: List[int] = [0]
 
@@ -122,12 +122,12 @@ class Lexer:
             current_indent = self.indent_stack[-1]
 
             if indent_level > current_indent:
-                # Indentation increased — push new level, emit INDENT
+                # Indentation increased - push new level, emit INDENT
                 self.indent_stack.append(indent_level)
                 self.tokens.append(Token(TokenType.INDENT, indent_level, self.line))
 
             elif indent_level < current_indent:
-                # Indentation decreased — pop levels, emit DEDENT for each
+                # Indentation decreased - pop levels, emit DEDENT for each
                 while (self.indent_stack
                        and self.indent_stack[-1] > indent_level):
                     self.indent_stack.pop()
@@ -235,7 +235,7 @@ class Lexer:
                         string_chars.append(REVERSE_LETTERS[ch])
                         i += 1
                     else:
-                        # Unknown char inside string — keep raw
+                        # Unknown char inside string - keep raw
                         string_chars.append(ch)
                         i += 1
 
@@ -266,29 +266,29 @@ class Lexer:
                     if eng_punc in self._punc_token_map:
                         token_type = self._punc_token_map[eng_punc]
                         self.tokens.append(Token(token_type, eng_punc, self.line))
-                    # skip quote chars — handled in string literal section
+                    # skip quote chars - handled in string literal section
                     i += len(braille_punc)
                     matched = True
                     break
             if matched:
                 continue
 
-            # ── Capital prefix (⠠) — start of uppercase identifier char ──
+            # ── Capital prefix (⠠) - start of uppercase identifier char ──
             if braille_line[i] == CAPITAL_PREFIX:
-                # This is a capital letter in an identifier — collect full identifier
+                # This is a capital letter in an identifier - collect full identifier
                 ident = self._read_identifier(braille_line, i)
                 i = ident['end_pos']
                 self.tokens.append(Token(TokenType.IDENTIFIER, ident['name'], self.line))
                 continue
 
-            # ── Underscore indicator (⠸) — identifier starts with _ ──────
+            # ── Underscore indicator (⠸) - identifier starts with _ ──────
             if braille_line[i] == '⠸':
                 ident = self._read_identifier(braille_line, i)
                 i = ident['end_pos']
                 self.tokens.append(Token(TokenType.IDENTIFIER, ident['name'], self.line))
                 continue
 
-            # ── Braille letter — start of identifier ─────────────────────
+            # ── Braille letter - start of identifier ─────────────────────
             if braille_line[i] in REVERSE_LETTERS:
                 ident = self._read_identifier(braille_line, i)
                 i = ident['end_pos']

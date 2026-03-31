@@ -154,7 +154,7 @@ def test_valid_simple_assignment():
 
 
 def test_valid_variable_chain():
-    """Analyzer: x = 10, y = x (valid — x declared before use)"""
+    """Analyzer: x = 10, y = x (valid - x declared before use)"""
     sa = analyze("x = 10\ny = x")
     assert_no_errors(sa)
     assert sa.symbol_table.is_declared('x')
@@ -254,7 +254,7 @@ if x > 5:
         print(x)"""
     sa = analyze(source)
     assert_no_errors(sa)
-    print("[PASS] Nested if with outer variable access — no errors")
+    print("[PASS] Nested if with outer variable access - no errors")
 
 
 # ─── Analyzer: errors ─────────────────────────────────────────────────────────
@@ -295,7 +295,7 @@ if x > 5:
 print(inner)"""
     sa = analyze(source)
     assert_has_error(sa, "'inner' used before assignment")
-    print("[PASS] Scope isolation — inner variable not visible outside block")
+    print("[PASS] Scope isolation - inner variable not visible outside block")
 
 
 def test_error_multiple_undeclared():
@@ -359,7 +359,7 @@ def test_get_report_with_errors():
 
 if __name__ == '__main__':
     print("=" * 60)
-    print("BrailleCode Semantic Analyzer — Test Suite")
+    print("BrailleCode Semantic Analyzer - Test Suite")
     print("=" * 60)
 
     tests = [

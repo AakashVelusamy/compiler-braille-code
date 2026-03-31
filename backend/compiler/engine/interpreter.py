@@ -86,7 +86,7 @@ class Environment:
             if name in scope:
                 scope[name] = value
                 return
-        # New variable — declare in current scope
+        # New variable - declare in current scope
         self._scopes[-1][name] = value
 
     def get_all(self) -> Dict[str, Any]:
@@ -167,7 +167,7 @@ class Interpreter:
         self.env.set(node.name, value)
 
     def _exec_print(self, node: Print):
-        """Execute: print(expression) — appends the string representation to output."""
+        """Execute: print(expression) - appends the string representation to output."""
         value = self._eval_expression(node.value)
         self.output.append(self._to_display_string(value))
 

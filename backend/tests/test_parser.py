@@ -310,7 +310,7 @@ def test_modulo_divide():
     print_ast(ast)
 
     expr = ast.body[0].value
-    # Should be: (10 % 3) + (8 / 2) — same precedence for %, /, and *, left-assoc within +
+    # Should be: (10 % 3) + (8 / 2) - same precedence for %, /, and *, left-assoc within +
     assert isinstance(expr, BinOp)
     assert expr.op == '+'
     assert isinstance(expr.left, BinOp) and expr.left.op == '%'
@@ -372,7 +372,7 @@ def test_line_numbers_in_ast():
 
 if __name__ == '__main__':
     print("=" * 60)
-    print("BrailleCode Parser — Test Suite")
+    print("BrailleCode Parser - Test Suite")
     print("=" * 60)
 
     tests = [

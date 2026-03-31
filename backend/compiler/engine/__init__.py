@@ -1,4 +1,4 @@
-"""BrailleCode Compiler Engine — core compiler pipeline modules."""
+"""BrailleCode Compiler Engine - core compiler pipeline modules."""
 
 from .braille_map import get_full_mapping
 from .translator import Translator, TranslationError
@@ -13,5 +13,6 @@ from .ast_nodes import (
 )
 from .analyzer import SemanticAnalyzer, SemanticError, SymbolTable
 from .interpreter import Interpreter, RuntimeError_, MaxIterationsError
-from .tokens import Token, TokenType
-from .lexer import Lexer, LexerError
+from .ir_generator import IRGenerator, TACInstruction
+from .optimizer import Optimizer
+from .codegen import CodeGenerator

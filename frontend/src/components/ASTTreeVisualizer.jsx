@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { ChevronDownIcon, ChevronRightIcon } from './Icons';
 
 const CAT_STYLE = {
   program:   { bg: '#1a1a2e', bd: '#6366f1', tx: '#a5b4fc' },
@@ -21,7 +22,7 @@ function Node({ node, depth = 0, hl, onHover }) {
         style={{ '--nbg': c.bg, '--nbd': c.bd, '--ntx': c.tx, marginLeft: depth * 20 }}
         onMouseEnter={() => onHover?.(node.line)} onMouseLeave={() => onHover?.(null)}
         onClick={() => has && setOpen(!open)}>
-        {has ? <span className="ast-arr">{open ? '▾' : '▸'}</span> : <span className="ast-spc" />}
+        {has ? <span className="ast-arr">{open ? <ChevronDownIcon size={10} /> : <ChevronRightIcon size={10} />}</span> : <span className="ast-spc" />}
         <span className="ast-lbl">{node.label}</span>
         <span className="ast-badge">{node.type}</span>
         {node.line > 0 && <span className="ast-ln">:{node.line}</span>}

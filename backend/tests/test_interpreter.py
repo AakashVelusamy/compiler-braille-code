@@ -491,7 +491,7 @@ print(result)"""
 
 if __name__ == '__main__':
     print("=" * 60)
-    print("BrailleCode Interpreter — Test Suite")
+    print("BrailleCode Interpreter - Test Suite")
     print("=" * 60)
 
     tests = [

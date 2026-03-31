@@ -18,7 +18,7 @@ export default function ExportButtons({ source, braille, result }) {
       <button className="exp-btn exp-all" disabled={!result} onClick={() => dl('report.json', JSON.stringify({
         source, braille, ast: result?.ast, ast_tree: result?.ast_tree, tokens: result?.tokens,
         output: result?.output, variables: result?.variables, analysis: result?.analysis, errors: result?.errors,
-      }, null, 2), 'application/json')}>Full report</button>
+      }, null, 2), 'application/json')}>Full Report</button>
     </div>
   );
 }

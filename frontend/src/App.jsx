@@ -7,6 +7,7 @@ import PipelineTimeline from './components/PipelineTimeline';
 import ExamplesGallery from './components/ExamplesGallery';
 import ExportButtons from './components/ExportButtons';
 import { compileCode, debugCode, translateCode } from './api/compilerApi';
+import { PlayIcon, DebugIcon, CodeIcon, XIcon, TrashIcon } from './components/Icons';
 import './App.css';
 
 export default function App() {
@@ -68,22 +69,39 @@ export default function App() {
 
   return (
     <div className="app">
+
+      {/* ─── Academic Top Strip ─── */}
+      <div className="acad-strip">
+        <div className="acad-left">
+          <span className="acad-course">23XT67 - Compiler Design Lab</span>
+          <span className="acad-divider" />
+        </div>
+        <div className="acad-right">
+          <span className="acad-divider" />
+          <span className="acad-member">
+            <span className="acad-roll">23PT01</span>
+            <span className="acad-name">Aakash Velusamy</span>
+          </span>
+          <span className="acad-divider" />
+          <span className="acad-member">
+            <span className="acad-roll">23PT11</span>
+            <span className="acad-name">Harshil Bhavik Momaya</span>
+          </span>
+        </div>
+      </div>
+
       {/* ─── Header ─── */}
       <header className="hdr">
         <div className="hdr-left">
           <div className="logo">
-            <span className="logo-dots">⠃⠉⠉</span>
-            <div className="logo-text">
-              <span className="logo-main">BrailleCode</span>
-              <span className="logo-sub">Compiler</span>
+            <div className="logo-icon">
+              <span className="logo-braille">⠃⠉⠉</span>
             </div>
+            <span className="logo-name">BrailleCodeCompiler</span>
           </div>
         </div>
         <div className="hdr-center">
           <PipelineTimeline result={result} loading={loading} />
-        </div>
-        <div className="hdr-right">
-          <span className="course-tag">23XT67 — Compiler Design Lab</span>
         </div>
       </header>
 
@@ -91,15 +109,21 @@ export default function App() {
       <div className="toolbar">
         <div className="tb-left">
           <button className="btn btn-run" onClick={handleCompile} disabled={loading || debugLoading}>
-            {loading ? <><span className="spin" /> Compiling</> : <><span className="btn-icon">▶</span> Compile & Run</>}
+            {loading ? <><span className="spin" /><span className="btn-lbl"> Compiling…</span></> : <><PlayIcon /><span className="btn-lbl"> Compile &amp; Run</span></>}
           </button>
           <button className="btn btn-dbg" onClick={handleDebug} disabled={loading || debugLoading}>
-            {debugLoading ? <><span className="spin" /> Debugging</> : <><span className="btn-icon">⏱</span> Debug</>}
+            {debugLoading ? <><span className="spin" /><span className="btn-lbl"> Debugging…</span></> : <><DebugIcon className="btn-icon" /><span className="btn-lbl"> Debug</span></>}
           </button>
           <div className="tb-sep" />
-          <button className="btn btn-ghost" onClick={() => setShowExamples(true)}>Examples</button>
-          {debugMode && <button className="btn btn-ghost btn-exit" onClick={() => reset()}>Exit Debug</button>}
-          <button className="btn btn-ghost" onClick={() => reset('')}>Clear</button>
+          <button className="btn btn-ghost" onClick={() => setShowExamples(true)}>
+            <CodeIcon size={14} /><span className="btn-lbl"> Examples</span>
+          </button>
+          {debugMode && <button className="btn btn-ghost btn-exit" onClick={() => reset()}>
+            <XIcon size={14} /><span className="btn-lbl"> Exit Debug</span>
+          </button>}
+          <button className="btn btn-ghost" onClick={() => reset('')}>
+            <TrashIcon size={14} /><span className="btn-lbl"> Clear</span>
+          </button>
         </div>
         {debugMode && <span className="tb-debug-tag">DEBUG MODE</span>}
       </div>

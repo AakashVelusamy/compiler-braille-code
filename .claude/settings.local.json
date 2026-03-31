@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(PYTHONIOENCODING=utf-8 python -m tests.test_translator)",
+      "Bash(PYTHONIOENCODING=utf-8 python -m tests.test_lexer)",
+      "Bash(PYTHONIOENCODING=utf-8 python -m tests.test_parser)",
+      "Bash(PYTHONIOENCODING=utf-8 python -m tests.test_analyzer)",
+      "Bash(npm install:*)",
+      "Bash(npx react-scripts:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}

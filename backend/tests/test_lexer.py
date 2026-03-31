@@ -286,7 +286,7 @@ def test_comma_in_print():
 
 if __name__ == '__main__':
     print("=" * 60)
-    print("BrailleCode Lexer — Test Suite")
+    print("BrailleCode Lexer - Test Suite")
     print("=" * 60)
 
     tests = [

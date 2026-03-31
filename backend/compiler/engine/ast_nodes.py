@@ -7,20 +7,20 @@ The parser builds a tree of these nodes from the token stream.
 The semantic analyzer and interpreter then walk this tree.
 
 Node hierarchy:
-  Program         — root node, contains a list of statements
-  ├── Assign      — variable assignment:  x = expr
-  ├── Print       — print statement:      print(expr)
-  ├── If          — if / elif / else:     if cond: block [elif cond: block] [else: block]
-  ├── While       — while loop:           while cond: block
-  ├── BinOp       — binary operation:     expr op expr
-  ├── UnaryOp     — unary operation:      not expr, -expr
-  ├── Compare     — comparison:           expr cmp_op expr
-  ├── BoolOp      — boolean logic:        expr and/or expr
-  ├── Number      — integer literal:      42
-  ├── String      — string literal:       "hello"
-  ├── Boolean     — True / False
-  ├── NoneValue   — None
-  └── Identifier  — variable reference:   x
+  Program         - root node, contains a list of statements
+  ├── Assign      - variable assignment:  x = expr
+  ├── Print       - print statement:      print(expr)
+  ├── If          - if / elif / else:     if cond: block [elif cond: block] [else: block]
+  ├── While       - while loop:           while cond: block
+  ├── BinOp       - binary operation:     expr op expr
+  ├── UnaryOp     - unary operation:      not expr, -expr
+  ├── Compare     - comparison:           expr cmp_op expr
+  ├── BoolOp      - boolean logic:        expr and/or expr
+  ├── Number      - integer literal:      42
+  ├── String      - string literal:       "hello"
+  ├── Boolean     - True / False
+  ├── NoneValue   - None
+  └── Identifier  - variable reference:   x
 """
 
 from dataclasses import dataclass, field

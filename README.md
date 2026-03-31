@@ -1,6 +1,6 @@
 # BrailleCode Compiler
 
-**23XT67 — Compiler Design Lab**
+**23XT67 - Compiler Design Lab**
 **23PT01 - Aakash Velusamy | 23PT11 - Harshil Bhavik Momaya**
 
 A compiler that treats Braille as the native source code. Users write in English-like syntax, the system converts to Braille, then compiles and executes through a full pipeline.
@@ -8,22 +8,22 @@ A compiler that treats Braille as the native source code. Users write in English
 ## Features
 
 ### Core Compiler Pipeline
-- **Translator** — Bidirectional English ↔ Braille (Unicode U+2800–U+283F) conversion
-- **Lexer** — Tokenizes Braille input with indentation-based scoping (INDENT/DEDENT)
-- **Parser** — Recursive descent parser with 7-level operator precedence → AST
-- **Semantic Analyzer** — Symbol table, scope tracking, variable usage checks, type inference
-- **Interpreter** — Tree-walk executor with division-by-zero protection and loop limits
+- **Translator** - Bidirectional English ↔ Braille (Unicode U+2800–U+283F) conversion
+- **Lexer** - Tokenizes Braille input with indentation-based scoping (INDENT/DEDENT)
+- **Parser** - Recursive descent parser with 7-level operator precedence → AST
+- **Semantic Analyzer** - Symbol table, scope tracking, variable usage checks, type inference
+- **Interpreter** - Tree-walk executor with division-by-zero protection and loop limits
 
 ### Frontend Features
-- **Monaco Editor** — VS Code-quality code editor with Python syntax highlighting
-- **Live Braille Preview** — Real-time Braille translation as you type (debounced 500ms)
-- **AST Tree Visualizer** — Interactive collapsible tree, color-coded by node category
-- **Token Stream Visualizer** — Colored pills grouped by line (keyword/operator/literal/identifier)
-- **Step-by-Step Debugger** — Play/pause/step controls, variable watch, output tracking, line highlighting
-- **Pipeline Timeline** — Visual stepper showing pass/fail status for each compiler phase
-- **Error Highlighting** — Red squiggly markers in the editor on error lines
-- **Example Programs Gallery** — 10 preloaded programs (FizzBuzz, Fibonacci, Factorial, etc.)
-- **Export/Download** — Export source (.bcc), Braille (.brl), AST (.json), output, or full report
+- **Monaco Editor** - VS Code-quality code editor with Python syntax highlighting
+- **Live Braille Preview** - Real-time Braille translation as you type (debounced 500ms)
+- **AST Tree Visualizer** - Interactive collapsible tree, color-coded by node category
+- **Token Stream Visualizer** - Colored pills grouped by line (keyword/operator/literal/identifier)
+- **Step-by-Step Debugger** - Play/pause/step controls, variable watch, output tracking, line highlighting
+- **Pipeline Timeline** - Visual stepper showing pass/fail status for each compiler phase
+- **Error Highlighting** - Red squiggly markers in the editor on error lines
+- **Example Programs Gallery** - 10 preloaded programs (FizzBuzz, Fibonacci, Factorial, etc.)
+- **Export/Download** - Export source (.bcc), Braille (.brl), AST (.json), output, or full report
 
 ### API Endpoints
 | Method | URL               | Description                        |

@@ -2,10 +2,11 @@
 BrailleCode API Views
 ======================
 
-Three endpoints:
-  POST /api/translate/  — English ↔ Braille conversion only
-  POST /api/compile/    — Full pipeline: translate → lex → parse → analyze → execute
-  POST /api/ast/        — Returns the AST as JSON (for visualization)
+Four endpoints:
+  POST /api/translate/  - English ↔ Braille conversion only
+  POST /api/compile/    - Full 6-phase pipeline: translate → lex → parse → analyze → IR → optimize → codegen → execute
+  POST /api/ast/        - Returns the AST as JSON (for visualization)
+  POST /api/debug/      - Step-by-step execution with state snapshots
 """
 
 from rest_framework.decorators import api_view
@@ -16,6 +17,9 @@ from .engine.translator import Translator, TranslationError
 from .engine.lexer import Lexer, LexerError
 from .engine.parser import Parser, ParseError
 from .engine.analyzer import SemanticAnalyzer
+from .engine.ir_generator import IRGenerator
+from .engine.optimizer import Optimizer
+from .engine.codegen import CodeGenerator
 from .engine.interpreter import Interpreter
 from .engine.debugger import Debugger
 from .engine.ast_nodes import ast_to_dict, ast_to_tree
@@ -59,8 +63,14 @@ def compile_and_run(request):
     POST /api/compile/
     Body: { "source": "x = 10\\nprint(x)" }
 
-    Full pipeline: translate → lex → parse → analyze → execute.
-    Returns output, variables, AST, analysis report, tokens, and any errors.
+    Full 6-phase pipeline:
+      1. Lexical Analysis  (translate + tokenize)
+      2. Syntax Analysis   (parse → AST)
+      3. Semantic Analysis  (type checks, scope validation)
+      4. Intermediate Code Generation (AST → Three-Address Code)
+      5. Code Optimization  (constant folding, propagation, dead code, strength reduction)
+      6. Code Generation    (TAC → pseudo-assembly)
+    Then: interpret the AST for actual execution output.
     """
     source = request.data.get('source', '')
     if not source.strip():
@@ -78,21 +88,25 @@ def compile_and_run(request):
         'analysis': {},
         'errors': [],
         'tokens': [],
+        'ir': {},
+        'optimization': {},
+        'codegen': {},
     }
 
-    # ── Step 1: Translate ─────────────────────────────────────────────────
+    # ── Phase 1: Lexical Analysis ────────────────────────────────────────
+    # Step 1a: Translate English → Braille
     try:
         braille = translator.english_to_braille(source)
         result['braille'] = braille
     except TranslationError as e:
         result['errors'].append({
-            'phase': 'translation',
+            'phase': 'lexical',
             'message': str(e),
             'line': 0,
         })
         return Response(result)
 
-    # ── Step 2: Lex ───────────────────────────────────────────────────────
+    # Step 1b: Tokenize (Lexical Analysis / Scanner)
     try:
         lexer = Lexer(braille)
         tokens = lexer.tokenize()
@@ -106,13 +120,13 @@ def compile_and_run(request):
         ]
     except LexerError as e:
         result['errors'].append({
-            'phase': 'lexer',
+            'phase': 'lexical',
             'message': str(e),
             'line': e.line,
         })
         return Response(result)
 
-    # ── Step 3: Parse ─────────────────────────────────────────────────────
+    # ── Phase 2: Syntax Analysis (Parser) ────────────────────────────────
     try:
         parser = Parser(tokens)
         ast = parser.parse()
@@ -120,13 +134,13 @@ def compile_and_run(request):
         result['ast_tree'] = ast_to_tree(ast)
     except ParseError as e:
         result['errors'].append({
-            'phase': 'parser',
+            'phase': 'syntax',
             'message': str(e),
             'line': e.token.line,
         })
         return Response(result)
 
-    # ── Step 4: Semantic Analysis ─────────────────────────────────────────
+    # ── Phase 3: Semantic Analysis ───────────────────────────────────────
     analyzer = SemanticAnalyzer()
     analysis_ok = analyzer.analyze(ast)
     result['analysis'] = analyzer.get_report()
@@ -142,7 +156,26 @@ def compile_and_run(request):
         ])
         return Response(result)
 
-    # ── Step 5: Execute ───────────────────────────────────────────────────
+    # ── Phase 4: Intermediate Code Generation ────────────────────────────
+    ir_gen = IRGenerator()
+    ir_instructions = ir_gen.generate(ast)
+    result['ir'] = {
+        'text': ir_gen.to_text(),
+        'instructions': ir_gen.to_list(),
+        'instruction_count': len(ir_instructions),
+    }
+
+    # ── Phase 5: Code Optimization ───────────────────────────────────────
+    optimizer = Optimizer(ir_instructions)
+    optimized = optimizer.optimize()
+    result['optimization'] = optimizer.get_report()
+
+    # ── Phase 6: Code Generation ─────────────────────────────────────────
+    codegen = CodeGenerator(optimized)
+    codegen.generate()
+    result['codegen'] = codegen.get_report()
+
+    # ── Execute (via tree-walk interpreter for actual output) ─────────────
     interp = Interpreter()
     exec_result = interp.execute(ast)
 

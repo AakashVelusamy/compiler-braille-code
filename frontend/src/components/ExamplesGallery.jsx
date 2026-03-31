@@ -1,4 +1,5 @@
 import React from 'react';
+import { XIcon } from './Icons';
 
 const EX = [
   { name: 'Hello World', desc: 'Basic print', code: 'print("hello world")' },
@@ -19,7 +20,7 @@ export default function ExamplesGallery({ onSelect, onClose }) {
       <div className="ex-modal" onClick={e => e.stopPropagation()}>
         <div className="ex-header">
           <h2>Example Programs</h2>
-          <button className="ex-close" onClick={onClose}>×</button>
+          <button className="ex-close" onClick={onClose}><XIcon size={14} /></button>
         </div>
         <div className="ex-grid">
           {EX.map((e, i) => (

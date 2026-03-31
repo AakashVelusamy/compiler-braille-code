@@ -1,6 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { SkipBackIcon, RewindIcon, PauseIcon, PlayIcon, FastForwardIcon, SkipForwardIcon, ArrowRightIcon, TerminalIcon, DiamondIcon, RefreshIcon, SquareIcon, XIcon } from './Icons';
 
-const EV = { assign:'←', print:'▶', branch:'◇', loop_start:'↻', loop_end:'■', error:'✗' };
+const EV_ICONS = {
+  assign: ArrowRightIcon,
+  print: TerminalIcon,
+  branch: DiamondIcon,
+  loop_start: RefreshIcon,
+  loop_end: SquareIcon,
+  error: XIcon
+};
 const EC = { assign:'#58a6ff', print:'#3fb950', branch:'#d29922', loop_start:'#a855f7', loop_end:'#8b949e', error:'#f85149' };
 
 export default function DebuggerPanel({ steps, loading, onStepChange }) {
@@ -34,13 +42,13 @@ export default function DebuggerPanel({ steps, loading, onStepChange }) {
     <div className="dbg">
       {/* Controls */}
       <div className="dbg-ctrl">
-        <button onClick={() => { setCur(0); setPlaying(false); }}>⏮</button>
-        <button onClick={() => { setCur(p => Math.max(0, p-1)); setPlaying(false); }}>⏪</button>
-        <button className={`dbg-play ${playing ? 'on' : ''}`} onClick={() => setPlaying(p => !p)}>
-          {playing ? '⏸' : '▶'}
+        <button onClick={() => { setCur(0); setPlaying(false); }} title="First"><SkipBackIcon size={12} /></button>
+        <button onClick={() => { setCur(p => Math.max(0, p-1)); setPlaying(false); }} title="Back"><RewindIcon size={12} /></button>
+        <button className={`dbg-play ${playing ? 'on' : ''}`} onClick={() => setPlaying(p => !p)} title={playing ? "Pause" : "Play"}>
+          {playing ? <PauseIcon size={12} /> : <PlayIcon size={12} />}
         </button>
-        <button onClick={() => { setCur(p => Math.min(total-1, p+1)); setPlaying(false); }}>⏩</button>
-        <button onClick={() => { setCur(total-1); setPlaying(false); }}>⏭</button>
+        <button onClick={() => { setCur(p => Math.min(total-1, p+1)); setPlaying(false); }} title="Forward"><FastForwardIcon size={12} /></button>
+        <button onClick={() => { setCur(total-1); setPlaying(false); }} title="Last"><SkipForwardIcon size={12} /></button>
         <span className="dbg-count">{cur+1} / {total}</span>
         <select className="dbg-speed" value={speed} onChange={e => setSpeed(+e.target.value)}>
           <option value={1500}>0.5x</option><option value={800}>1x</option>
@@ -55,7 +63,9 @@ export default function DebuggerPanel({ steps, loading, onStepChange }) {
       {step && (
         <div className="dbg-detail">
           <div className="dbg-desc-row">
-            <span className="dbg-ev" style={{ color: EC[step.event] || '#8b949e' }}>{EV[step.event] || '•'}</span>
+            <span className="dbg-ev" style={{ color: EC[step.event] || '#8b949e' }}>
+              {(() => { const Icon = EV_ICONS[step.event]; return Icon ? <Icon size={14} /> : '•'; })()}
+            </span>
             <span className="dbg-desc">{step.description}</span>
             <span className="dbg-line">Line {step.line}</span>
           </div>
@@ -89,15 +99,20 @@ export default function DebuggerPanel({ steps, loading, onStepChange }) {
 
       {/* Timeline */}
       <div className="tl" ref={tlRef}>
-        {steps.map((s, i) => (
-          <div key={i} className={`tl-step ${i === cur ? 'active' : ''} ${i < cur ? 'past' : ''}`}
-            onClick={() => { setCur(i); setPlaying(false); }}>
-            <span className="tl-ev" style={{ color: EC[s.event] || '#8b949e' }}>{EV[s.event] || '•'}</span>
-            <span className="tl-num">#{s.step_number}</span>
-            <span className="tl-desc">{s.description}</span>
-            <span className="tl-ln">L{s.line}</span>
-          </div>
-        ))}
+        {steps.map((s, i) => {
+          const Icon = EV_ICONS[s.event];
+          return (
+            <div key={i} className={`tl-step ${i === cur ? 'active' : ''} ${i < cur ? 'past' : ''}`}
+              onClick={() => { setCur(i); setPlaying(false); }}>
+              <span className="tl-ev" style={{ color: EC[s.event] || '#8b949e' }}>
+                {Icon ? <Icon size={11} /> : '•'}
+              </span>
+              <span className="tl-num">#{s.step_number}</span>
+              <span className="tl-desc">{s.description}</span>
+              <span className="tl-ln">L{s.line}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

@@ -27,6 +27,26 @@ export default function CodeEditor({ value, onChange, highlightLine, errors }) {
   function handleMount(editor, monaco) {
     editorRef.current = editor;
     monacoRef.current = monaco;
+
+    monaco.editor.defineTheme('bcc-theme', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [
+        { token: '', foreground: 'ffffff' },
+        { token: 'keyword', foreground: '79b8ff' },
+        { token: 'string', foreground: 'a5d6ff' },
+        { token: 'number', foreground: 'd2a8ff' },
+        { token: 'comment', foreground: 'cccccc' },
+      ],
+      colors: {
+        'editor.background': '#0d1117',
+        'editor.lineHighlightBackground': '#161b22',
+        'editorGutter.background': '#0d1117',
+        'editor.selectionBackground': '#264f78',
+        'editorInactiveSelectionBackground': '#264f7844',
+      }
+    });
+    monaco.editor.setTheme('bcc-theme');
   }
 
   useEffect(() => {
@@ -67,7 +87,7 @@ export default function CodeEditor({ value, onChange, highlightLine, errors }) {
         {highlightLine && <span className="badge badge-warn">Line {highlightLine}</span>}
       </div>
       <div className="editor-wrap">
-        <Editor height="100%" defaultLanguage="python" theme="vs-dark"
+        <Editor height="100%" defaultLanguage="python" theme="bcc-theme"
           value={value ?? DEFAULT_CODE} onChange={v => onChange(v || '')} onMount={handleMount}
           options={{
             fontSize: 14, fontFamily: "'JetBrains Mono', monospace", minimap: { enabled: false },

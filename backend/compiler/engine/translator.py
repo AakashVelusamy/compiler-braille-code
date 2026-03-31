@@ -88,7 +88,7 @@ class Translator:
         while i < len(content):
             ch = content[i]
 
-            # Skip regular spaces between tokens — add Braille space
+            # Skip regular spaces between tokens - add Braille space
             if ch == ' ':
                 braille_parts.append(BRAILLE_SPACE)
                 i += 1
@@ -294,7 +294,7 @@ class Translator:
                 i += 1
                 continue
 
-            # Unknown — skip
+            # Unknown - skip
             result.append(f'[?{braille_line[i]}]')
             i += 1
 

@@ -19,7 +19,7 @@ Walks the AST and performs static checks before execution:
        (e.g. assigning a string then using it in arithmetic)
      - These are warnings, not hard errors, since our language is dynamic
 
-The analyzer does NOT execute the program — it only validates structure.
+The analyzer does NOT execute the program - it only validates structure.
 """
 
 from typing import Dict, List, Optional, Set
@@ -35,7 +35,7 @@ from .ast_nodes import (
 # ─── Errors & Warnings ───────────────────────────────────────────────────────
 
 class SemanticError(Exception):
-    """Hard error — program cannot proceed."""
+    """Hard error - program cannot proceed."""
 
     def __init__(self, message: str, line: int):
         self.line = line
@@ -44,7 +44,7 @@ class SemanticError(Exception):
 
 @dataclass
 class SemanticWarning:
-    """Soft warning — program can still run but something looks suspicious."""
+    """Soft warning - program can still run but something looks suspicious."""
     message: str
     line: int
 
@@ -225,7 +225,7 @@ class SemanticAnalyzer:
         """Recursively check all variable references in an expression."""
 
         if isinstance(node, Number):
-            pass  # Literal — nothing to check
+            pass  # Literal - nothing to check
 
         elif isinstance(node, String):
             pass
@@ -237,7 +237,7 @@ class SemanticAnalyzer:
             pass
 
         elif isinstance(node, Identifier):
-            # Variable reference — must be declared
+            # Variable reference - must be declared
             if not self.symbol_table.is_declared(node.name):
                 self._add_error(
                     f"Variable '{node.name}' used before assignment",

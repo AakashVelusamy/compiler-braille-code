@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
+import { EnterIcon } from './Icons';
 
 const CAT = {
-  PRINT:'kw',IF:'kw',ELSE:'kw',ELIF:'kw',WHILE:'kw',TRUE:'kw',FALSE:'kw',AND:'kw',OR:'kw',NOT:'kw',NONE:'kw',
-  PLUS:'op',MINUS:'op',MULTIPLY:'op',DIVIDE:'op',MODULO:'op',ASSIGN:'op',EQUAL:'op',NOT_EQUAL:'op',
-  LESS:'op',GREATER:'op',LESS_EQ:'op',GREATER_EQ:'op',
-  INTEGER:'lit',STRING:'lit',
-  IDENTIFIER:'id',
-  LPAREN:'pn',RPAREN:'pn',COLON:'pn',COMMA:'pn',
-  INDENT:'st',DEDENT:'st',NEWLINE:'st',EOF:'st',
+  PRINT: 'kw', IF: 'kw', ELSE: 'kw', ELIF: 'kw', WHILE: 'kw', TRUE: 'kw', FALSE: 'kw', AND: 'kw', OR: 'kw', NOT: 'kw', NONE: 'kw',
+  PLUS: 'op', MINUS: 'op', MULTIPLY: 'op', DIVIDE: 'op', MODULO: 'op', ASSIGN: 'op', EQUAL: 'op', NOT_EQUAL: 'op',
+  LESS: 'op', GREATER: 'op', LESS_EQ: 'op', GREATER_EQ: 'op',
+  INTEGER: 'lit', STRING: 'lit',
+  IDENTIFIER: 'id',
+  LPAREN: 'pn', RPAREN: 'pn', COLON: 'pn', COMMA: 'pn',
+  INDENT: 'st', DEDENT: 'st', NEWLINE: 'st', EOF: 'st',
 };
 
 const LEGEND = [
@@ -55,7 +56,7 @@ export default function TokenVisualizer({ tokens }) {
                   return (
                     <span key={i} className={`tok-pill tok-${cat}`} title={`${t.type}: ${t.value}`}>
                       <span className="tok-pill-type">{t.type}</span>
-                      {t.value && !['NEWLINE','INDENT','DEDENT'].includes(t.type) && (
+                      {t.value && !['NEWLINE', 'INDENT', 'DEDENT'].includes(t.type) && (
                         <span className="tok-pill-val">{String(t.value)}</span>
                       )}
                     </span>
@@ -73,7 +74,7 @@ export default function TokenVisualizer({ tokens }) {
               <tr key={i} className={`tok-row-${CAT[t.type] || 'st'}`}>
                 <td>{t.line}</td>
                 <td className="tok-t-type">{t.type}</td>
-                <td>{t.type === 'NEWLINE' ? '↵' : t.value || '—'}</td>
+                <td>{t.type === 'NEWLINE' ? <EnterIcon size={12} /> : t.value || '-'}</td>
               </tr>
             ))}
           </tbody>

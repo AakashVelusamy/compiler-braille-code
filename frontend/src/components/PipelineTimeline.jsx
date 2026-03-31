@@ -1,11 +1,13 @@
 import React from 'react';
+import { ZapIcon, TreeIcon, SearchIcon, CodeIcon, CogIcon, CpuIcon, CheckIcon, XIcon, ArrowRightSlimIcon } from './Icons';
 
 const PHASES = [
-  { key: 'translation', label: 'Translate', sym: '⠃' },
-  { key: 'lexer',       label: 'Lex',       sym: '⚡' },
-  { key: 'parser',      label: 'Parse',     sym: '🌳' },
-  { key: 'semantic',    label: 'Analyze',   sym: '🔎' },
-  { key: 'runtime',     label: 'Execute',   sym: '▶' },
+  { key: 'lexical',       label: 'Lexical Analysis',      Icon: ZapIcon, num: '1' },
+  { key: 'syntax',        label: 'Syntax Analysis',       Icon: TreeIcon, num: '2' },
+  { key: 'semantic',      label: 'Semantic Analysis',     Icon: SearchIcon, num: '3' },
+  { key: 'ir',            label: 'Intermediate Code Generation', Icon: CodeIcon, num: '4' },
+  { key: 'optimization',  label: 'Code Optimization',     Icon: CogIcon,  num: '5' },
+  { key: 'codegen',       label: 'Code Generation',      Icon: CpuIcon, num: '6' },
 ];
 
 export default function PipelineTimeline({ result, loading }) {
@@ -27,13 +29,13 @@ export default function PipelineTimeline({ result, loading }) {
         const s = status(p.key);
         return (
           <React.Fragment key={p.key}>
-            <div className={`pipe-step pipe-${s}`}>
-              <span className="pipe-sym">{p.sym}</span>
+            <div className={`pipe-step pipe-${s}`} title={`Phase ${p.num}: ${p.label}`}>
+              <span className="pipe-num">{p.num}</span>
+              <p.Icon size={11} className="pipe-icon-main" />
               <span className="pipe-lbl">{p.label}</span>
-              {s === 'ok' && <span className="pipe-chk">✓</span>}
-              {s === 'fail' && <span className="pipe-x">✗</span>}
+              {s === 'fail' && <XIcon size={10} className="pipe-status-icon" />}
             </div>
-            {i < PHASES.length - 1 && <span className={`pipe-arrow ${s === 'fail' || s === 'skip' ? 'dim' : ''}`}>→</span>}
+            {i < PHASES.length - 1 && <ArrowRightSlimIcon size={10} className={`pipe-arrow ${s === 'fail' || s === 'skip' ? 'dim' : ''}`} />}
           </React.Fragment>
         );
       })}
