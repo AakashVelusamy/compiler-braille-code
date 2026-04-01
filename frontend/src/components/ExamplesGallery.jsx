@@ -37,8 +37,8 @@ export default function ExamplesGallery({ onSelect, onClose }) {
             {VALID_EXAMPLES.map(renderCard)}
           </div>
 
-          <h3 style={{ fontSize: '13px', color: 'var(--tx-2)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Phase Error </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: '10px' }}>Demonstration
+          <h3 style={{ fontSize: '13px', color: 'var(--tx-2)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Phase Error Demonstration</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: '10px' }}>
             {ERROR_EXAMPLES.map(renderCard)}
           </div>
         </div>
