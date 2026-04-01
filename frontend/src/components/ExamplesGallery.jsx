@@ -32,13 +32,13 @@ export default function ExamplesGallery({ onSelect, onClose }) {
           <button className="ex-close" onClick={onClose}><XIcon size={14} /></button>
         </div>
         <div className="ex-grid" style={{ display: 'block', padding: '16px 20px' }}>
-          <h3 style={{ fontSize: '13px', color: 'var(--tx-2)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pipeline Showcases</h3>
+          <h3 style={{ fontSize: '13px', color: 'var(--tx-2)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pipeline Showcase</h3>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: '10px', marginBottom: '24px' }}>
             {VALID_EXAMPLES.map(renderCard)}
           </div>
 
-          <h3 style={{ fontSize: '13px', color: 'var(--tx-2)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Phase Error Demonstrations</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: '10px' }}>
+          <h3 style={{ fontSize: '13px', color: 'var(--tx-2)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Phase Error </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: '10px' }}>Demonstration
             {ERROR_EXAMPLES.map(renderCard)}
           </div>
         </div>
