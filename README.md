@@ -8,6 +8,7 @@ A compiler that treats Braille as the native source code. Users write in English
 ## Features
 
 ### Core Compiler Pipeline
+
 - **Translator** - Bidirectional English ↔ Braille (Unicode U+2800–U+283F) conversion
 - **Lexer** - Tokenizes Braille input with indentation-based scoping (INDENT/DEDENT)
 - **Parser** - Recursive descent parser with 7-level operator precedence → AST
@@ -18,6 +19,7 @@ A compiler that treats Braille as the native source code. Users write in English
 - **Interpreter** - Tree-walk executor with division-by-zero protection and loop limits
 
 ### Frontend Features
+
 - **Monaco Editor** - VS Code-quality code editor with Python syntax highlighting
 - **Live Braille Preview** - Real-time Braille translation as you type (debounced 500ms)
 - **Compiler Phases Visualizers** - Interactive tabs for Lexical, Syntax (AST), Semantic, IR, Optimization, and Code Generation outputs
@@ -28,12 +30,13 @@ A compiler that treats Braille as the native source code. Users write in English
 - **Export/Download** - Export source (.bcc), Braille (.brl), AST (.json), output, or full report
 
 ### API Endpoints
-| Method | URL               | Description                        |
-|--------|-------------------|------------------------------------|
-| POST   | `/api/compile/`   | Full pipeline: compile + execute   |
-| POST   | `/api/translate/` | English ↔ Braille translation      |
-| POST   | `/api/ast/`       | Returns AST + tree (no execution)  |
-| POST   | `/api/debug/`     | Step-by-step execution snapshots   |
+
+| Method | URL                 | Description                       |
+| ------ | ------------------- | --------------------------------- |
+| POST   | `/api/compile/`   | Full pipeline: compile + execute  |
+| POST   | `/api/translate/` | English ↔ Braille translation    |
+| POST   | `/api/ast/`       | Returns AST + tree (no execution) |
+| POST   | `/api/debug/`     | Step-by-step execution snapshots  |
 
 ## Project Structure
 
@@ -88,6 +91,7 @@ braillecode/
 ## Setup & Run
 
 ### Prerequisites
+
 - Python 3.8+
 - Node.js 16+ and npm
 
@@ -113,7 +117,7 @@ API available at **http://localhost:8000/api/**
 ### 2. Frontend (React)
 
 ```bash
-cd braillecode/frontend
+cd frontend
 npm install
 npm start
 ```
@@ -142,6 +146,7 @@ Invoke-RestMethod -Method POST -Uri "http://localhost:8000/api/compile/" `
 ## Language Reference
 
 ### Supported Features
+
 - Variables: `x = 10`, `msg = "hello"`, `flag = True`
 - Arithmetic: `+`, `-`, `*`, `/` (integer), `%`
 - Comparisons: `==`, `!=`, `<`, `>`, `<=`, `>=`

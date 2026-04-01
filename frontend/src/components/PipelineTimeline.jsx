@@ -33,7 +33,6 @@ export default function PipelineTimeline({ result, loading }) {
               <span className="pipe-num">{p.num}</span>
               <p.Icon size={11} className="pipe-icon-main" />
               <span className="pipe-lbl">{p.label}</span>
-              {s === 'fail' && <XIcon size={10} className="pipe-status-icon" />}
             </div>
             {i < PHASES.length - 1 && <ArrowRightSlimIcon size={10} className={`pipe-arrow ${s === 'fail' || s === 'skip' ? 'dim' : ''}`} />}
           </React.Fragment>
