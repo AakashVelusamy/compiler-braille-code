@@ -13,7 +13,7 @@ const DEFAULT_PASS = { bg: 'rgba(156,163,180,0.06)', bd: 'rgba(156,163,180,0.15)
 export default function OptimizationVisualizer({ optimization }) {
   const [tab, setTab] = useState('log');
 
-  if (!optimization?.log) return <div className="placeholder">Compile to see optimizations</div>;
+  if (!optimization?.log) return <div className="placeholder"></div>;
 
   const { original_count, optimized_count, eliminated, stats, log, instructions } = optimization;
   const totalOpts = log.length;

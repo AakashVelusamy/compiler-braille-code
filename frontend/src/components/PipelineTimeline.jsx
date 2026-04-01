@@ -11,7 +11,12 @@ const PHASES = [
 ];
 
 export default function PipelineTimeline({ result, loading }) {
-  const failPhase = result?.errors?.[0]?.phase;
+  const backendPhase = result?.errors?.[0]?.phase;
+  let failPhase = backendPhase;
+  if (backendPhase === 'translation') failPhase = 'lexical';
+  if (backendPhase === 'lexer') failPhase = 'lexical';
+  if (backendPhase === 'parser') failPhase = 'syntax';
+  if (backendPhase === 'runtime') failPhase = 'codegen';
 
   const status = (key) => {
     if (loading) return 'running';

@@ -19,8 +19,10 @@ from .braille_map import (
 
 
 class TranslationError(Exception):
-    """Raised when the translator encounters an unmappable character."""
-    pass
+    """Raised when the translator encounters an error."""
+    def __init__(self, message: str, line: int):
+        self.line = line
+        super().__init__(f"Line {line}: {message}")
 
 
 class Translator:
@@ -64,18 +66,25 @@ class Translator:
         lines = source.split('\n')
         braille_lines = []
 
-        for line in lines:
-            braille_line = self._translate_line(line)
+        for offset, line in enumerate(lines):
+            braille_line = self._translate_line(line, offset + 1)
             braille_lines.append(braille_line)
 
         # Join lines with Braille newline delimiter
         return BRAILLE_NEWLINE.join(braille_lines)
 
-    def _translate_line(self, line: str) -> str:
+    def _translate_line(self, line: str, line_num: int) -> str:
         """Translate a single line of English source to Braille."""
         # Count leading spaces (4 spaces = 1 indent level, matching Python)
         stripped = line.lstrip(' ')
         num_spaces = len(line) - len(stripped)
+        
+        if num_spaces % 4 != 0:
+            raise TranslationError(
+                f"Invalid indentation ({num_spaces} spaces): must be a multiple of 4",
+                line_num
+            )
+            
         indent_level = num_spaces // 4
 
         # Build Braille indentation
@@ -171,14 +180,16 @@ class Translator:
                             braille_parts.append(LETTERS[c])
                         else:
                             raise TranslationError(
-                                f"Cannot translate character '{c}' in identifier '{word}'"
+                                f"Cannot translate character '{c}' in identifier '{word}'",
+                                line_num
                             )
 
                 i = j
                 continue
 
             raise TranslationError(
-                f"Unexpected character '{ch}' (U+{ord(ch):04X}) at position {i}"
+                f"Unexpected character '{ch}' (U+{ord(ch):04X}) at position {i}",
+                line_num
             )
 
         return ''.join(braille_parts)

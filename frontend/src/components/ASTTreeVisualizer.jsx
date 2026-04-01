@@ -43,7 +43,7 @@ export default function ASTTreeVisualizer({ astTree }) {
   const [hl, setHl] = useState(null);
   const hover = useCallback(l => setHl(l), []);
 
-  if (!astTree?.children) return <div className="placeholder">Compile to see AST</div>;
+  if (!astTree?.children) return <div className="placeholder"></div>;
 
   return (
     <div className="ast-viz">

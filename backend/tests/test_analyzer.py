@@ -307,12 +307,12 @@ def test_error_multiple_undeclared():
 
 # ─── Analyzer: warnings ──────────────────────────────────────────────────────
 
-def test_warning_type_mismatch():
-    """Analyzer: string + int produces type mismatch warning"""
+def test_error_type_mismatch():
+    """Analyzer: string + int produces type mismatch error"""
     source = 'x = "hello"\ny = 5\nz = x + y'
     sa = analyze(source)
-    assert_has_warning(sa, "Type mismatch")
-    print("[PASS] Type mismatch warning produced for str + int")
+    assert_has_error(sa, "Type mismatch")
+    print("[PASS] Type mismatch error produced for str + int")
 
 
 def test_no_warning_int_arithmetic():
@@ -388,7 +388,7 @@ if __name__ == '__main__':
         test_error_scope_isolation,
         test_error_multiple_undeclared,
         # Warnings
-        test_warning_type_mismatch,
+        test_error_type_mismatch,
         test_no_warning_int_arithmetic,
         test_no_warning_string_concat,
         # Report

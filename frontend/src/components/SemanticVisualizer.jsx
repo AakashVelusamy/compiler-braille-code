@@ -2,22 +2,14 @@ import React from 'react';
 import { CheckIcon, XIcon, AlertIcon } from './Icons';
 
 export default function SemanticVisualizer({ analysis }) {
-  if (!analysis?.symbols) return <div className="placeholder">Compile to see semantic analysis</div>;
+  if (!analysis?.symbols) return <div className="placeholder"></div>;
 
   const { success, errors, warnings, symbols } = analysis;
 
   return (
     <div className="sem-viz">
       {/* Status banner */}
-      <div className={`sem-banner ${success ? 'sem-ok' : 'sem-err'}`}>
-        <span className="sem-banner-icon">{success ? <CheckIcon size={14} /> : <XIcon size={14} />}</span>
-        <span className="sem-banner-text">
-          {success ? 'Semantic Analysis Passed - No Errors' : `${errors.length} Semantic Error(s) Found`}
-        </span>
-        {warnings?.length > 0 && (
-          <span className="sem-warn-count">{warnings.length} warning(s)</span>
-        )}
-      </div>
+      
 
       {/* Errors */}
       {errors?.length > 0 && (

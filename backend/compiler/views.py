@@ -102,7 +102,7 @@ def compile_and_run(request):
         result['errors'].append({
             'phase': 'lexical',
             'message': str(e),
-            'line': 0,
+            'line': getattr(e, 'line', 0),
         })
         return Response(result)
 

@@ -43,7 +43,7 @@ export default function IRVisualizer({ ir }) {
   const [view, setView] = useState('visual');
   const [hoveredLine, setHoveredLine] = useState(null);
 
-  if (!ir?.instructions?.length) return <div className="placeholder">Compile to see Intermediate Code</div>;
+  if (!ir?.instructions?.length) return <div className="placeholder"></div>;
 
   return (
     <div className="ir-viz">

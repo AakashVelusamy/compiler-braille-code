@@ -1,35 +1,46 @@
 import React from 'react';
 import { XIcon } from './Icons';
 
-const EX = [
-  { name: 'Hello World', desc: 'Basic print', code: 'print("hello world")' },
-  { name: 'Arithmetic', desc: 'Operators + precedence', code: 'x = 10\ny = 20\nz = x + y * 2\nprint(z)\nprint(x - y)\nprint(z % 7)' },
-  { name: 'If / Elif / Else', desc: 'Conditional branching', code: 'score = 75\nif score >= 90:\n    print("excellent")\nelif score >= 70:\n    print("good")\nelif score >= 50:\n    print("pass")\nelse:\n    print("fail")' },
-  { name: 'Countdown', desc: 'While loop', code: 'x = 5\nwhile x > 0:\n    print(x)\n    x = x - 1\nprint("done")' },
-  { name: 'Sum 1..N', desc: 'Accumulator', code: 'n = 10\ntotal = 0\ni = 1\nwhile i <= n:\n    total = total + i\n    i = i + 1\nprint(total)' },
-  { name: 'FizzBuzz', desc: 'Modulo + branching', code: 'i = 1\nwhile i <= 15:\n    if i % 15 == 0:\n        print("fizzbuzz")\n    elif i % 3 == 0:\n        print("fizz")\n    elif i % 5 == 0:\n        print("buzz")\n    else:\n        print(i)\n    i = i + 1' },
-  { name: 'Power of 2', desc: 'Compute 2^10', code: 'result = 1\ni = 0\nwhile i < 10:\n    result = result * 2\n    i = i + 1\nprint(result)' },
-  { name: 'Fibonacci', desc: 'First 10 numbers', code: 'a = 0\nb = 1\ncount = 0\nwhile count < 10:\n    print(a)\n    temp = a + b\n    a = b\n    b = temp\n    count = count + 1' },
-  { name: 'Factorial', desc: 'Compute 8!', code: 'n = 8\nfact = 1\ni = 1\nwhile i <= n:\n    fact = fact * i\n    i = i + 1\nprint(fact)' },
-  { name: 'Boolean Logic', desc: 'and, or, not', code: 'a = True\nb = False\nc = not a or b\nd = a and not b\nprint(c)\nprint(d)\nx = 10\nresult = x > 5 and x < 20\nprint(result)' },
+const VALID_EXAMPLES = [
+  { name: 'Optimization Showcase', desc: 'Constant folding & dead code', code: 'a = 10 * 5 + 2\nb = 0\nif False:\n    print("unreachable")\nelse:\n    print(a)\n\n# Multiply by zero optimized away\nc = a * b \nprint(c)' },
+  { name: 'Prime Checker', desc: 'Complex loops, conditions, scope', code: 'num = 29\nis_prime = True\ni = 2\nwhile i < num:\n    if num % i == 0:\n        is_prime = False\n    i = i + 1\n\nif is_prime:\n    print("Prime")\nelse:\n    print("Composite")' },
+  { name: 'Fibonacci Sequence', desc: 'State tracking and reassignments', code: 'n = 10\na = 0\nb = 1\nwhile n > 0:\n    print(a)\n    temp = a + b\n    a = b\n    b = temp\n    n = n - 1' },
+];
+
+const ERROR_EXAMPLES = [
+  { name: 'Lexical Error', desc: 'Invalid indentation levels', code: 'x = 10\nif x > 5:\n    print("ok")\n  print("bad indent")' },
+  { name: 'Syntax Error', desc: 'Missing syntax tokens (colon, parens)', code: 'val = 10\nif val == 10\n    print "hello"' },
+  { name: 'Semantic Error : Scope', desc: 'Undeclared variable reference', code: 'a = 10\nif a > 0:\n    b = 20\n\nprint(b)\nprint(c)' },
+  { name: 'Semantic Error : Type', desc: 'Type mismatch in binary operation', code: 'msg = "Score: "\nval = 100\nprint(msg + val)' },
+  { name: 'Runtime Error', desc: 'Division by zero during execution', code: 'total = 500\ntarget = 10\nwhile target >= 0:\n    print(total / target)\n    target = target - 5' }
 ];
 
 export default function ExamplesGallery({ onSelect, onClose }) {
+  const renderCard = (e, i) => (
+    <div key={i} className="ex-card" onClick={() => { onSelect(e.code); onClose(); }}>
+      <div className="ex-name">{e.name}</div>
+      <div className="ex-desc">{e.desc}</div>
+      <pre className="ex-preview">{e.code.split('\n').slice(0, 4).join('\n')}{e.code.split('\n').length > 4 ? '\n...' : ''}</pre>
+    </div>
+  );
+
   return (
     <div className="ex-overlay" onClick={onClose}>
-      <div className="ex-modal" onClick={e => e.stopPropagation()}>
+      <div className="ex-modal" style={{ maxHeight: '90vh' }} onClick={e => e.stopPropagation()}>
         <div className="ex-header">
           <h2>Example Programs</h2>
           <button className="ex-close" onClick={onClose}><XIcon size={14} /></button>
         </div>
-        <div className="ex-grid">
-          {EX.map((e, i) => (
-            <div key={i} className="ex-card" onClick={() => { onSelect(e.code); onClose(); }}>
-              <div className="ex-name">{e.name}</div>
-              <div className="ex-desc">{e.desc}</div>
-              <pre className="ex-preview">{e.code.split('\n').slice(0, 4).join('\n')}{e.code.split('\n').length > 4 ? '\n...' : ''}</pre>
-            </div>
-          ))}
+        <div className="ex-grid" style={{ display: 'block', padding: '16px 20px' }}>
+          <h3 style={{ fontSize: '13px', color: 'var(--tx-2)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pipeline Showcases</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: '10px', marginBottom: '24px' }}>
+            {VALID_EXAMPLES.map(renderCard)}
+          </div>
+
+          <h3 style={{ fontSize: '13px', color: 'var(--tx-2)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Phase Error Demonstrations</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))', gap: '10px' }}>
+            {ERROR_EXAMPLES.map(renderCard)}
+          </div>
         </div>
       </div>
     </div>

@@ -326,7 +326,7 @@ class SemanticAnalyzer:
 
         # Anything else is a type mismatch warning
         if left_type != right_type:
-            self._add_warning(
+            self._add_error(
                 f"Type mismatch in '{node.op}' operation: "
                 f"left is {left_type}, right is {right_type}",
                 node.line,

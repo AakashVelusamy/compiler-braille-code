@@ -48,7 +48,7 @@ const LEGEND = [
 export default function CodeGenVisualizer({ codegen }) {
   const [view, setView] = useState('visual');
 
-  if (!codegen?.instructions?.length) return <div className="placeholder">Compile to see generated code</div>;
+  if (!codegen?.instructions?.length) return <div className="placeholder"></div>;
 
   const { assembly_text, instruction_count, registers_used, memory_locations, memory_map, data_section, instructions } = codegen;
 
