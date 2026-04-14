@@ -1,120 +1,73 @@
-# BrailleCode Compiler
+# BrailleCode Compiler System
 
-**23XT67 - Compiler Design Lab**
-**23PT01 - Aakash Velusamy | 23PT11 - Harshil Bhavik Momaya**
+This project implements a complete compiler pipeline that targets Braille Unicode as the source representation. The system performs a full translation from high level syntax to register allocated pseudo-assembly for a virtual stack machine.
 
-A compiler that treats Braille as the native source code. Users write in English-like syntax, the system converts to Braille, then compiles and executes through a full pipeline.
+## System Architecture
 
-## Features
+The following flowchart represents the technical progression of the compilation units through the various stages of the compiler middle-end and back-end.
 
-### Core Compiler Pipeline
-
-- **Translator** - Bidirectional English ↔ Braille (Unicode U+2800–U+283F) conversion
-- **Lexer** - Tokenizes Braille input with indentation-based scoping (INDENT/DEDENT)
-- **Parser** - Recursive descent parser with 7-level operator precedence → AST
-- **Semantic Analyzer** - Symbol table, scope tracking, variable usage checks, type inference
-- **IR Generator** - Converts AST into machine-independent Three-Address Code (TAC)
-- **Optimizer** - Applies dead code elimination, constant folding, and copy propagation
-- **Code Generator** - Lowers optimized IR to target machine assembly with register allocation
-- **Interpreter** - Tree-walk executor with division-by-zero protection and loop limits
-
-### Frontend Features
-
-- **Monaco Editor** - VS Code-quality code editor with Python syntax highlighting
-- **Live Braille Preview** - Real-time Braille translation as you type (debounced 500ms)
-- **Compiler Phases Visualizers** - Interactive tabs for Lexical, Syntax (AST), Semantic, IR, Optimization, and Code Generation outputs
-- **Pipeline Timeline** - Visual stepper showing pass/fail status for each compiler phase
-- **Step-by-Step Debugger** - Play/pause/step controls, variable watch, output tracking, line highlighting
-- **Error Highlighting** - Red squiggly markers in the editor on error lines
-- **Example Programs Gallery** - preloaded programs (FizzBuzz, Fibonacci, Factorial, etc.)
-- **Export/Download** - Export source (.bcc), Braille (.brl), AST (.json), output, or full report
-
-### API Endpoints
-
-| Method | URL                 | Description                       |
-| ------ | ------------------- | --------------------------------- |
-| POST   | `/api/compile/`   | Full pipeline: compile + execute  |
-| POST   | `/api/translate/` | English ↔ Braille translation    |
-| POST   | `/api/ast/`       | Returns AST + tree (no execution) |
-| POST   | `/api/debug/`     | Step-by-step execution snapshots  |
-
-## Project Structure
-
-```
-braillecode/
-├── backend/                         # Django + DRF
-│   ├── manage.py
-│   ├── requirements.txt
-│   ├── config/                      # Django settings, urls, wsgi
-│   └── compiler/                    # Django app
-│       ├── views.py                 # 4 API endpoints
-│       ├── urls.py
-│       ├── serializers.py
-│       └── engine/                  # Compiler pipeline
-│           ├── braille_map.py       # Unicode mapping table
-│           ├── translator.py        # English ↔ Braille
-│           ├── tokens.py            # Token type definitions
-│           ├── lexer.py             # Braille → token stream
-│           ├── ast_nodes.py         # AST node types + serializers
-│           ├── parser.py            # Recursive descent parser
-│           ├── analyzer.py          # Semantic analysis
-│           ├── ir_generator.py      # Uses AST to generate Three Address Code (TAC)
-│           ├── optimizer.py         # Constant folding, dead code config on IR
-│           ├── codegen.py           # Emits assembly + memory map
-│           ├── interpreter.py       # Tree-walk interpreter
-│           └── debugger.py          # Step-by-step executor
-├── frontend/                        # React 18
-│   ├── package.json
-│   ├── public/index.html
-│   └── src/
-│       ├── App.jsx                  # Main app with all features wired
-│       ├── App.css                  # Complete dark theme styling + phase tabs
-│       ├── api/compilerApi.js       # API client (compile, debug, translate)
-│       └── components/
-│           ├── CodeEditor.jsx           # Monaco with debug + error highlighting
-│           ├── BrailleDisplay.jsx       # Live Braille preview panel
-│           ├── OutputPanel.jsx          # Tabbed results routing for all phases
-│           ├── TokenVisualizer.jsx      # Phase 1 output
-│           ├── ASTTreeVisualizer.jsx    # Phase 2 output
-│           ├── SemanticVisualizer.jsx   # Phase 3 output
-│           ├── IRVisualizer.jsx         # Phase 4 output
-│           ├── OptimizationVisualizer.jsx # Phase 5 output
-│           ├── CodeGenVisualizer.jsx    # Phase 6 output
-│           ├── DebuggerPanel.jsx        # Step-by-step debugger with playback
-│           ├── PipelineTimeline.jsx     # Compiler phase pass/fail stepper
-│           ├── ExamplesGallery.jsx      # Gallery modal with sample programs
-│           ├── ExportButtons.jsx        # Download reports
-│           └── Icons.jsx                # Lucide React icons wrapper
-└── README.md
+```mermaid
+graph TD
+    A[English Source] --> B[Translation]
+    B --> C[Braille Representation]
+    C --> D[Lexical Analysis]
+    D --> E[Token Stream]
+    E --> F[Syntax Analysis]
+    F --> G[Abstract Syntax Tree]
+    G --> H[Semantic Analysis]
+    H --> I[Intermediate Representation]
+    I --> J[Intermediate Optimization]
+    J --> K[Code Generation]
+    K --> L[Target Assembly]
+    H --> M[Interpreter Execution]
+    M --> N[Program Output]
 ```
 
-## Setup & Run
+## Compilation Process
 
-### Prerequisites
+**Source Translation**: The system processes English source strings into equivalent Braille Unicode characters based on Grade 1 Braille standards. This bidirectional mapping ensures that the subsequent scanner operates exclusively on tactile Unicode patterns.
 
-- Python 3.8+
-- Node.js 16+ and npm
+**Lexical Analysis**: The scanner partitions the input stream into a discrete sequence of tokens based on defined regular languages. This process utilizes a stack based algorithm to track indentation depths and emit structural tokens for scope management.
 
-### 1. Backend (Django)
+![Lexical Analysis](docs/lexical.png)
+
+**Syntax Analysis**: A recursive descent parser constructs a hierarchical abstract syntax tree from the token stream. The parser enforces a context free grammar with seven distinct levels of operator precedence to ensure correct expression binding.
+
+![Syntax Analysis](docs/syntax.png)
+
+**Semantic Analysis**: The analyzer performs a traversal of the tree to enforce language constraints and maintain symbol tables. It conducts type inference and identifies undeclared variable references across nested lexical scopes.
+
+![Semantic Analysis](docs/semantic.png)
+
+**Intermediate Representation**: The system lowers the validated tree into a machine independent three address code format. This representation linearizes the program flow and facilitates the implementation of optimization algorithms.
+
+![Intermediate Representation](docs/intermediate.png)
+
+**Intermediate Optimization**: The middle-end executes constant folding and dead code elimination on the intermediate representation. These passes refine the instruction sequence to improve runtime efficiency and reduce the final memory footprint.
+
+![Optimization](docs/optimization.png)
+
+**Target Code Generation**: The back-end translates optimized intermediate instructions into pseudo-assembly for a virtual machine. A linear scan allocator manages register assignments across the eight available registers and handles memory spilling when register pressure is high.
+
+![Code Generation](docs/generation.png)
+
+**Runtime Execution**: The interpreter performs a tree walk evaluation of the final program state. It maintains a runtime environment for variable storage and captures output streams while enforcing safety limits on loop iterations.
+
+![Memory Management](docs/memory.png)
+
+## Setup and Installation
+
+### Backend Environment
 
 ```bash
-cd braillecode/backend
-
-# Create virtual environment
+cd backend
 python -m venv venv
-venv\Scripts\activate          # Windows
-# source venv/bin/activate     # Mac/Linux
-
-# Install dependencies
+venv\Scripts\activate
 pip install -r requirements.txt
-
-# Start server
 python manage.py runserver
 ```
 
-API available at **http://localhost:8000/api/**
-
-### 2. Frontend (React)
+### Frontend Environment
 
 ```bash
 cd frontend
@@ -122,36 +75,12 @@ npm install
 npm start
 ```
 
-Opens at **http://localhost:3000**
-
-### Run Tests (122 total)
+### Test Suite Execution
 
 ```bash
-cd braillecode/backend
-python -m tests.test_translator      # 12 tests
-python -m tests.test_lexer           # 18 tests
-python -m tests.test_parser          # 23 tests
-python -m tests.test_analyzer        # 26 tests
-python -m tests.test_interpreter     # 43 tests
+python -m tests.test_translator
+python -m tests.test_lexer
+python -m tests.test_parser
+python -m tests.test_analyzer
+python -m tests.test_interpreter
 ```
-
-### Quick API Test (PowerShell)
-
-```powershell
-Invoke-RestMethod -Method POST -Uri "http://localhost:8000/api/compile/" `
-  -ContentType "application/json" `
-  -Body '{"source": "x = 10\nif x > 5:\n    print(x)\nelse:\n    print(0)"}'
-```
-
-## Language Reference
-
-### Supported Features
-
-- Variables: `x = 10`, `msg = "hello"`, `flag = True`
-- Arithmetic: `+`, `-`, `*`, `/` (integer), `%`
-- Comparisons: `==`, `!=`, `<`, `>`, `<=`, `>=`
-- Boolean logic: `and`, `or`, `not`
-- Control flow: `if`/`elif`/`else`, `while`
-- Output: `print(expression)`
-- Literals: integers, strings, `True`, `False`, `None`
-- Scoping: Python-style 4-space indentation
